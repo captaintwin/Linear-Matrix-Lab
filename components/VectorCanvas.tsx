@@ -6,7 +6,8 @@ import { Vector2D, Matrix2x2 } from '../types';
 interface VectorCanvasProps {
   matrix: Matrix2x2;
   vectors: Vector2D[];
-  setVectors: (v: Vector2D[]) => void;
+  // Fix: changed setVectors type to React.Dispatch for consistency with 3D canvas and better state management
+  setVectors: React.Dispatch<React.SetStateAction<Vector2D[]>>;
   showGrid: boolean;
 }
 

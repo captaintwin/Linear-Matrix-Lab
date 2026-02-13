@@ -8,7 +8,8 @@ import { Vector3D, Matrix3x3 } from '../types';
 interface VectorCanvas3DProps {
   matrix: Matrix3x3;
   vectors: Vector3D[];
-  setVectors: (v: Vector3D[]) => void;
+  // Fix: changed setVectors type to support functional updates (React.Dispatch)
+  setVectors: React.Dispatch<React.SetStateAction<Vector3D[]>>;
   showGrid: boolean;
 }
 
@@ -144,7 +145,10 @@ const VectorCanvas3D: React.FC<VectorCanvas3DProps> = ({ matrix, vectors, setVec
     drag.addEventListener('dragstart', (e: any) => {
       s.orbit.enabled = false;
       const mesh = e.object as THREE.Mesh;
-      mesh.material.opacity = 0.3; // Подсвечиваем при захвате
+      // Fix: Cast to MeshBasicMaterial to access opacity property as base Material type doesn't guarantee it
+      if (mesh.material instanceof THREE.MeshBasicMaterial) {
+        mesh.material.opacity = 0.3; // Подсвечиваем при захвате
+      }
     });
 
     drag.addEventListener('drag', (e: any) => {
@@ -177,11 +181,15 @@ const VectorCanvas3D: React.FC<VectorCanvas3DProps> = ({ matrix, vectors, setVec
 
     drag.addEventListener('dragend', (e: any) => {
       s.orbit.enabled = true;
-      (e.object as THREE.Mesh).material.opacity = 0;
+      const mesh = e.object as THREE.Mesh;
+      // Fix: Cast to MeshBasicMaterial to access opacity property as base Material type doesn't guarantee it
+      if (mesh.material instanceof THREE.MeshBasicMaterial) {
+        mesh.material.opacity = 0;
+      }
     });
 
   }, [vectors.length, matrix, showGrid, inverseMatrix, setVectors]); 
-  // Важно: vectors.length в зависимостях вместо всего массива, чтобы избежать циклического пересоздания DragControls при drag-событии
+  // Важно: vectors.length в зависимостях вместо всего массива, чтобы избежать циклического пересоздания DragControls при drag-собитии
 
   return (
     <div className="w-full h-full rounded-xl border border-slate-800 overflow-hidden shadow-2xl relative group bg-slate-950">

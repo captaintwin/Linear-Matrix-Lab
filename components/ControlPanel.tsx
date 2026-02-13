@@ -24,6 +24,8 @@ interface ControlPanelProps {
 const ControlPanel: React.FC<ControlPanelProps> = (props) => {
   const [activeTab, setActiveTab] = useState<ControlTab>('transform');
 
+  // Fix: Removed API key management local states and functions as they are prohibited by the guidelines
+
   const handleMatrixChange = (row: number, col: number, val: string, isB = false) => {
     const num = parseFloat(val) || 0;
     if (props.mode === '2D') {
@@ -177,10 +179,11 @@ const ControlPanel: React.FC<ControlPanelProps> = (props) => {
 
         {activeTab === 'analysis' && (
           <div className="space-y-6">
+            {/* Fix: Simplified Analysis tab as API key is now strictly environment-based */}
             <button
               onClick={props.onAnalyze}
               disabled={props.isAnalyzing}
-              className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-xl shadow-indigo-500/10 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black uppercase tracking-widest rounded-lg shadow-xl shadow-indigo-500/10 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {props.isAnalyzing ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : 'Deep AI Insight'}
             </button>
@@ -194,10 +197,6 @@ const ControlPanel: React.FC<ControlPanelProps> = (props) => {
               </svg>
               Share Current Scene
             </button>
-
-            <div className="p-4 bg-indigo-500/5 rounded-lg border border-indigo-500/20 text-[11px] text-slate-400 leading-relaxed italic">
-              "AI Analysis uses Gemini to explain the physical meaning of your transformation, calculates eigenvectors conceptually and describes the change in space volume."
-            </div>
 
             <div className="flex items-center justify-between pt-4 border-t border-slate-800">
               <label className="flex items-center gap-2 cursor-pointer">
